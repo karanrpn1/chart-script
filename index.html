@@ -1,0 +1,111 @@
+<style type="text/css">
+    .xrIframe {
+        height:400px !Important;
+        position: relative;
+    }
+    .xrIframe iframe{
+        position: absolute;
+        top: 0;
+        height: 100% !Important;
+        transition: all 2s ease-out;
+        width: 100%;
+        visibility: hidden;
+    }
+    .xrIframe .active {
+        visibility: visible;
+    }
+</style>
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+    /* $(".xrIframe").each(function(){
+        var src = $(this).attr("data-src");
+
+        var ifrNo = 0;
+        var ifr = $(this).find(".frame1");
+        var ifrHidden = $(this).find(".frame2");
+        setInterval(function () {
+            console.log(ifr.attr("data-id"));        
+            console.log(ifrHidden.attr("data-id"));    
+            console.log("ifrno"+ifrNo);          
+            
+            if(ifrNo==0) {
+                ifr.attr("src", src);
+                ifrHidden.css("visibility","hidden");
+                ifrHidden.removeAttr("src");        
+                ifr.on('load', function() {
+                    $(this).css("visibility","visible");
+                    console.log("load1"+$(this).attr("data-id"));   
+                });
+                ifrNo = 1;
+            }
+            else {
+                ifrHidden.attr("src", src);
+                ifr.css("visibility","hidden");
+                ifr.removeAttr("src");                
+                ifrHidden.on('load', function() {                    
+                    
+                    $(this).css("visibility","visible");
+                    console.log("load2"+$(this).attr("data-id"));   
+                });
+                ifrNo = 0;
+            }
+        }, 10000);
+    }); */
+
+    
+    $(".xrIframe").each(function(){
+        var ev = $(this);
+        vis_swap(ev); 
+        
+    });
+
+    async function vis_swap(ev) {
+
+        var src = ev.attr("data-src");
+        var ifrNo = 0;
+        var ifr = ev.find(".frame1");
+        var ifrHidden = ev.find(".frame2");
+
+        if(ifr.hasClass("active")){
+            console.log("hello1");
+            let a = await loadResponse(ifrHidden, src);
+            console.log("hello2");
+            ifr.removeAttr("src");
+            ifr.removeClass("active");
+
+            ifrHidden.addClass("active");
+
+            
+        }
+        else {            
+            console.log("hello3");
+            let a = await loadResponse(ifr, src);
+            console.log("hello4");
+            ifrHidden.removeAttr("src");
+            ifrHidden.removeClass("active");
+            
+            ifr.addClass("active");
+
+            
+        }
+        
+        setTimeout(function(){
+            vis_swap(ev); 
+        }, 10000);
+    }
+
+    async function loadResponse(frame, src) {                      
+            
+        return new Promise((resolve, reject) => {
+            
+            frame.attr("src", src);
+            frame.on('load', function() { 
+                console.log("hello");
+                resolve("complete");
+            });
+        });   
+        
+    }
+});
+</script>
